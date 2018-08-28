@@ -57,11 +57,14 @@ public class LineBotRSController {
                        break;
                    case "sticker"://當message type為sticker時，進入此case執行，
                        System.out.println("This is a sticker message. It's replytoken is "+event.getReplyToken());
-                       break;
+                       
                    case "location"://當message type為location時，進入此case執行，
                 	   typeIsLocation(event.getReplyToken(), event.getMessage().getLatitude(), event.getMessage().getLongitude());
                        System.out.println("This is a location message. It's replytoken is "+event.getReplyToken());
                        break;
+                   default:
+                	   System.out.println("============default===============");
+                	   break;
                    }
                    
                    break;
