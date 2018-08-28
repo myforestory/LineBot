@@ -33,7 +33,6 @@ public class LineBotRSController {
         for(Event event:events.getEvents()){
             switch(event.getType()){
                case "join":
-            	   
             	   String messageJoin = "{\"type\": \"text\", \"text\": \"好開心進來了" + event.getSource().getType() + "，我是阿囉哈哈哈\" }";
             	   sendResponseMessages(event.getReplyToken(), messageJoin);
             	   break;
@@ -102,6 +101,8 @@ public class LineBotRSController {
     				+ "\"type\":\"uri\",\"label\":\"給我位置\",\"uri\":\"line://nv/location\"}]}}]";
     		sendResponseMessages(replyToken, messageTemplate);
     	}
+    	message = "[{\"type\":\"text\",\"text\":\""+message+"\"}]";
+    	sendResponseMessages(replyToken, message);
     }
     
     private void typeIsLocation(String replyToken, String latitude, String longitude){
