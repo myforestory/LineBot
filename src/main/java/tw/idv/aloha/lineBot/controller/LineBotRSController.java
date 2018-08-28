@@ -33,6 +33,7 @@ public class LineBotRSController {
         for(Event event:events.getEvents()){
             switch(event.getType()){
                case "join":
+            	   
             	   String messageJoin = "{\"type\": \"text\", \"text\": \"好開心進來了" + event.getSource().getType() + "，我是阿囉哈哈哈\" }";
             	   sendResponseMessages(event.getReplyToken(), messageJoin);
             	   break;
