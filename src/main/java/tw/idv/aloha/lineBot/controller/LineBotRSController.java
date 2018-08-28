@@ -23,15 +23,19 @@ import tw.idv.aloha.lineBot.model.GMaps_Text_Search;
 @Controller
 public class LineBotRSController {
 	//==== ngrok  ====
-//    private String accessToken="uN4Adp2siY1bd4k2vcCzyN9wKGkHTONWuHmNAk+TcQE3GkKhUkOKab9CmbVNiV+K+bsDgqtq78ApPUfAq8b6RWYl1SBHrhnVNbvg37FQSaH4UAR51RGGNM+PouklBcquzR8wkeuAd0m5LppYZGtAdwdB04t89/1O/w1cDnyilFU=";
+    private String accessToken="uN4Adp2siY1bd4k2vcCzyN9wKGkHTONWuHmNAk+TcQE3GkKhUkOKab9CmbVNiV+K+bsDgqtq78ApPUfAq8b6RWYl1SBHrhnVNbvg37FQSaH4UAR51RGGNM+PouklBcquzR8wkeuAd0m5LppYZGtAdwdB04t89/1O/w1cDnyilFU=";
     //==== heroku ====
-    private String accessToken="0kIC5VtMwqnF7zFuqAZLasS8fJp5nt5JDG6xon92Bv1OHw2gMPi7B8RvAdGC+18uJ0Do2VMyUg1etgigLszNGKJZMvggJijfX9JBs190jglt1ere6dXDj8gOIV1vLGjlx38cGtB2T2bYJSejYsSbOQdB04t89/1O/w1cDnyilFU=";
+//    private String accessToken="0kIC5VtMwqnF7zFuqAZLasS8fJp5nt5JDG6xon92Bv1OHw2gMPi7B8RvAdGC+18uJ0Do2VMyUg1etgigLszNGKJZMvggJijfX9JBs190jglt1ere6dXDj8gOIV1vLGjlx38cGtB2T2bYJSejYsSbOQdB04t89/1O/w1cDnyilFU=";
     
     @ResponseBody
     @RequestMapping(value="/callback")
     public void callback(@RequestBody EventWrapper events) {  
         for(Event event:events.getEvents()){
             switch(event.getType()){
+               case "join":
+            	   String messageJoin = "{\"type\": \"text\", \"text\": \"好開心進來了" + event.getSource().getType() + "，我是阿囉哈哈哈\" }";
+            	   sendResponseMessages(event.getReplyToken(), messageJoin);
+            	   break;
                case "message": //當event為message時進入此case執行，其他event(如follow、unfollow、leave等)的case在此省略，您可自己增加           
                    System.out.print("This is a message event!");
                    switch(event.getMessage().getType()){
