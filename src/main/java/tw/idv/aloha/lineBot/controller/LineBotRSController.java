@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +19,7 @@ import tw.idv.aloha.lineBot.model.Event;
 import tw.idv.aloha.lineBot.model.EventWrapper;
 import tw.idv.aloha.lineBot.model.GMaps_Text_Search;
 
-@RestController
+@Controller
 public class LineBotRSController {
 	//==== ngrok  ====
 //    private String accessToken="uN4Adp2siY1bd4k2vcCzyN9wKGkHTONWuHmNAk+TcQE3GkKhUkOKab9CmbVNiV+K+bsDgqtq78ApPUfAq8b6RWYl1SBHrhnVNbvg37FQSaH4UAR51RGGNM+PouklBcquzR8wkeuAd0m5LppYZGtAdwdB04t89/1O/w1cDnyilFU=";
