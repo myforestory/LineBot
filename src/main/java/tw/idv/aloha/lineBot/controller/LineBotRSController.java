@@ -24,7 +24,7 @@ public class LineBotRSController {
 	//==== ngrok  ====
 //    private String accessToken="uN4Adp2siY1bd4k2vcCzyN9wKGkHTONWuHmNAk+TcQE3GkKhUkOKab9CmbVNiV+K+bsDgqtq78ApPUfAq8b6RWYl1SBHrhnVNbvg37FQSaH4UAR51RGGNM+PouklBcquzR8wkeuAd0m5LppYZGtAdwdB04t89/1O/w1cDnyilFU=";
     //==== heroku ====
-    private String accessToken="hdDe3RRMLSHVTJ3JF7vMjiesQ4zvH/LrPgOn2jcDacPyOY3VdbY7FHzSi078FlvlJ0Do2VMyUg1etgigLszNGKJZMvggJijfX9JBs190jgm8C6SGwG8jSbw1hGVowRQMYpcbMDL8lnvYS8cgtaXwMAdB04t89/1O/w1cDnyilFU=";
+    private String accessToken="0kIC5VtMwqnF7zFuqAZLasS8fJp5nt5JDG6xon92Bv1OHw2gMPi7B8RvAdGC+18uJ0Do2VMyUg1etgigLszNGKJZMvggJijfX9JBs190jglt1ere6dXDj8gOIV1vLGjlx38cGtB2T2bYJSejYsSbOQdB04t89/1O/w1cDnyilFU=";
     
     
     @RequestMapping(value="/callback")
