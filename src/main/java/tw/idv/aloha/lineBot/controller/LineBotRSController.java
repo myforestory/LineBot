@@ -107,8 +107,8 @@ public class LineBotRSController {
     				+ "\"type\":\"uri\",\"label\":\"給我位置\",\"uri\":\"line://nv/location\"}]}}]";
     		sendResponseMessages(replyToken, messageTemplate);
     	}
-    	message = "[{\"type\":\"text\",\"text\":\""+message+"\"}]";
-    	sendResponseMessages(replyToken, message);
+//    	message = "[{\"type\":\"text\",\"text\":\""+message+"\"}]";
+//    	sendResponseMessages(replyToken, message);
     }
     
     private void typeIsLocation(String replyToken, String latitude, String longitude){
