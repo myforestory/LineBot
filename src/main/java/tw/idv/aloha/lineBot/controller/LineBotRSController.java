@@ -13,6 +13,7 @@ import javax.net.ssl.HttpsURLConnection;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import tw.idv.aloha.lineBot.model.Event;
@@ -26,7 +27,7 @@ public class LineBotRSController {
     //==== heroku ====
     private String accessToken="0kIC5VtMwqnF7zFuqAZLasS8fJp5nt5JDG6xon92Bv1OHw2gMPi7B8RvAdGC+18uJ0Do2VMyUg1etgigLszNGKJZMvggJijfX9JBs190jglt1ere6dXDj8gOIV1vLGjlx38cGtB2T2bYJSejYsSbOQdB04t89/1O/w1cDnyilFU=";
     
-    
+    @ResponseBody
     @RequestMapping(value="/callback")
     public void callback(@RequestBody EventWrapper events) {  
         for(Event event:events.getEvents()){
