@@ -30,9 +30,12 @@ public class LineBotRSController {
     @ResponseBody
     @RequestMapping(value="/callback")
     public void callback(@RequestBody EventWrapper events) {  
+    	System.out.println("========333==========");
         for(Event event:events.getEvents()){
+        	System.out.println("========35==========");
             switch(event.getType()){
                case "join":
+            	   System.out.println("========36==========");
             	   String messageJoin = "{\"type\": \"text\", \"text\": \"好開心進來了" + event.getSource().getType() + "，我是阿囉哈哈哈\" }";
             	   sendResponseMessages(event.getReplyToken(), messageJoin);
             	   break;
