@@ -19,13 +19,17 @@ public class LocationAction {
 		GMapSearch gMap = new GMapSearch();
 		String locationTemplate = "";
 		List<Map<String, Object>> searchList = gMap.gMapSearch(callbackURL);
-
+		if(searchList.size() == 0){
+			locationTemplate = MessageTemplate.textMessage(
+				"拍謝，你附近沒有好吃的，換個地方試試！"
+			);
+		} else {
+			// Get RandomOne Map Research //隨機一家
+			Map<String, Object> locationMap = gMap.getGMapRandom(searchList);
+			locationTemplate = MessageTemplate.buttonTemplateFromMap(locationMap);	
+		}
+		return locationTemplate;
 		// Get BestOne Map Research //最好的一家
 		// Map<String, Object> locationMap = GMapSearch.getGMapBest(searchList);
-
-		// Get RandomOne Map Research //隨機一家
-		Map<String, Object> locationMap = gMap.getGMapRandom(searchList);
-		locationTemplate = MessageTemplate.buttonTemplateFromMap(locationMap);
-		return locationTemplate;
 	}
 }
