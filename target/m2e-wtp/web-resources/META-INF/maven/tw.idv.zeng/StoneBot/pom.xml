@@ -64,9 +64,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		    <groupId>com.corundumstudio.socketio</groupId>
-		    <artifactId>netty-socketio</artifactId>
-		    <version>1.7.12</version>
+			<groupId>com.corundumstudio.socketio</groupId>
+			<artifactId>netty-socketio</artifactId>
+			<version>1.7.12</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.maps/google-maps-services -->
+		<dependency>
+			<groupId>com.google.maps</groupId>
+			<artifactId>google-maps-services</artifactId>
+			<version>0.1.1</version>
 		</dependency>
 	</dependencies>
 
