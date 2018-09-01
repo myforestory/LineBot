@@ -40,7 +40,7 @@ public class LineBotRSController {
 				sendResponseMessages(event.getReplyToken(), messageJoin);
 				break;
 			case "message": // 當event為message時進入此case執行，其他event(如follow、unfollow、leave等)的case在此省略，您可自己增加
-				System.out.print(event.getMessage().getText());
+				System.out.print(event.getMessage().getText()+"====");
 				switch (event.getMessage().getType()) {
 				case "text": // 當message
 								// type為text時，進入此case執行，目前子是將使用者傳來的文字訊息在其前加上echo字串後，回傳給使用者

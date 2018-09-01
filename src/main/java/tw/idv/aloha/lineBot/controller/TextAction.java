@@ -9,14 +9,18 @@ public class TextAction extends LineBotRSController {
 
 	public static String callbackMessageText(String text) {
 		String callbackMessage = "";
-		if (text.toLowerCase().equals("aloha推薦")) {
-			callbackMessage = isRecommend(text);
-			// } else if (text.substring(0 ,7).equals("我想吃最好吃的")){
-			// callbackMessage = recommendBestOne(text);
-		} else if (text.substring(0, 5).equals("我想吃很多")) {
-			callbackMessage = recommendMutli(text);
-		} else if (text.substring(0, 3).equals("我想吃")) {
-			callbackMessage = recommend(text);
+		try{
+			if (text.toLowerCase().equals("aloha推薦")) {
+				callbackMessage = isRecommend(text);
+				// } else if (text.substring(0 ,7).equals("我想吃最好吃的")){
+				// callbackMessage = recommendBestOne(text);
+			} else if (text.length() >= 5 && text.substring(0, 5).equals("我想吃很多")) {
+				callbackMessage = recommendMutli(text);
+			} else if (text.substring(0, 3).equals("我想吃")) {
+				callbackMessage = recommend(text);
+			}
+		}catch(Exception e){
+			System.out.println(text);
 		}
 		return callbackMessage;
 	}
