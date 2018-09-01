@@ -37,19 +37,26 @@ public class TextAction extends LineBotRSController {
 	// 我想吃.....show one
 	private static String recommend(String text) {
 		String textTemplate = "";
-		String isComma = Character.toString(text.charAt(5));
-		if (isComma.equals(",") || isComma.equals("，")) {
-			GMapSearch gMap = new GMapSearch();
-			String keyword = text.substring(3, text.length());
-			String callbackURL = gMap.getURLByText(keyword);
-			textTemplate = LocationAction.getGMapSearch(callbackURL);
-			// 綜合清單
-		} else {
-			//textMessage(String text)
+		if(text.length()<=7){
 			textTemplate = MessageTemplate.textMessage(
-				"地名只能有兩個字喔！ 例如: 我想吃三重，牛排 "
+				"請輸入正確的內容！我想吃＋地名＋食物 例如: 我想吃三重，牛排 "
 			);
+		} else {
+			String isComma = Character.toString(text.charAt(5));
+			if (isComma.equals(",") || isComma.equals("，")) {
+				GMapSearch gMap = new GMapSearch();
+				String keyword = text.substring(3, text.length());
+				String callbackURL = gMap.getURLByText(keyword);
+				textTemplate = LocationAction.getGMapSearch(callbackURL);
+				// 綜合清單
+			} else {
+				//textMessage(String text)
+				textTemplate = MessageTemplate.textMessage(
+					"地名只能有兩個字喔！ 例如: 我想吃三重，牛排 "
+				);
+			}
 		}
+		
 		return textTemplate;
 	}
 
