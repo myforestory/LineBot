@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import tw.idv.aloha.lineBot.Utli.MessageTemplate;
 import tw.idv.aloha.lineBot.controller.TextAction;
 
 import tw.idv.aloha.lineBot.model.Event;
@@ -32,8 +33,10 @@ public class LineBotRSController {
 		for (Event event : events.getEvents()) {
 			switch (event.getType()) {
 			case "join":
-				String messageJoin = "{\"type\": \"text\", \"text\": \"好開心進來了" + event.getSource().getType()
-						+ "，我是阿囉哈哈哈\" }";
+				String messageJoin = "";
+				messageJoin = MessageTemplate.textMessage(
+						"大感謝！加我好友 可以試著輸入\\nAloha推薦\\n大感謝！"
+					);
 				sendResponseMessages(event.getReplyToken(), messageJoin);
 				break;
 			case "message": // 當event為message時進入此case執行，其他event(如follow、unfollow、leave等)的case在此省略，您可自己增加

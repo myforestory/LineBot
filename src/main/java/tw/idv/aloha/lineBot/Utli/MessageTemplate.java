@@ -22,7 +22,7 @@ public class MessageTemplate {
 		open_now_Taiwan = (open_now.equals("true")) ? "有開" : "沒開";
 		String thumbnailImageUrl = (String) locationMap.get("photo_reference");
 		String text = "";
-		text = "店名：" + name + "，分數：" + rating + "分" + "，是否營業：" + open_now_Taiwan;
+		text = "店名：" + name +"\\n分數：" + rating + "分" + "\\n是否營業：" + open_now_Taiwan;
 
 		String place_URI = "https://www.google.com/maps/search/?api=1&query=" + place_latitude + "," + place_longitude
 				+ "&query_place_id=" + place_id;
