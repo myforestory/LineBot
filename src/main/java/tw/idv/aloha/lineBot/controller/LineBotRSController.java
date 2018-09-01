@@ -78,7 +78,7 @@ public class LineBotRSController {
 	protected void sendResponseMessages(String replyToken, String message) {
 		try {
 			message = "{\"replyToken\":\"" + replyToken + "\",\"messages\":" + message + "}"; // 回傳的json格式訊息
-			System.out.println(System.getProperty("line.separator") + message);
+//			System.out.println(System.getProperty("line.separator") + message);
 			URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
 			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
 			con.setRequestMethod("POST");// 設定post方法

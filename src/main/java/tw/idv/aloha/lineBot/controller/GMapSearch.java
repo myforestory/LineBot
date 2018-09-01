@@ -140,8 +140,6 @@ public class GMapSearch {
     	int length = randomList.size();
     	int randomIndex = random.nextInt(length);
     	Map<String, Object> randomMap = randomList.get(randomIndex);
-    	System.out.println();
-    	System.out.println(randomIndex);
     	return randomMap;
 	}
 }
