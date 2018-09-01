@@ -15,6 +15,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import tw.idv.aloha.lineBot.Utli.DateTimeUtil;
+
 public class GMapSearch {
 	
 	// 經緯度＋關鍵字搜尋
@@ -126,15 +128,22 @@ public class GMapSearch {
 	//Get RandomOne Map Research //隨機的一家
 	public Map<String, Object> getGMapRandom(List<Map<String, Object>> searchList){
 		Random random = new Random();
+		DateTimeUtil dateTimeUtil = new DateTimeUtil();
 		List<Map<String, Object>> randomList = new ArrayList<Map<String, Object>>();
+		Boolean isBewteen = dateTimeUtil.isBetweenTime("20", "11");
     	double ratingBetter = 3.5;
     	for(Map<String, Object> callbackMap : searchList){
     		Double rating = Double.parseDouble(callbackMap.get("rating").toString()) ;
-    		if(callbackMap.get("open_now").equals("true")){
+    		if(isBewteen && callbackMap.get("open_now").equals("true")){ //如果在11~20 只顯示有開的
 	    		if (rating > ratingBetter){
 	    			randomList.add(callbackMap);
 	    			continue;
-	    		}	
+	    		} 
+    		} else { //如果不在11~20 顯示開與不開的
+    			if (rating > ratingBetter){
+	    			randomList.add(callbackMap);
+	    			continue;
+    			}
     		}
     	}	
     	int length = randomList.size();

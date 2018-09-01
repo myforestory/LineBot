@@ -37,9 +37,9 @@ public class TextAction extends LineBotRSController {
 	// 我想吃.....show one
 	private static String recommend(String text) {
 		String textTemplate = "";
-		if(text.length()<=7){
+		if(text.length() <= 7){
 			textTemplate = MessageTemplate.textMessage(
-				"請輸入正確的內容！我想吃＋地名＋食物 例如: 我想吃三重，牛排 "
+				"請輸入正確的格式喔！\\n我想吃＋地名＋食物\\n例如: 我想吃三重，牛排 "
 			);
 		} else {
 			String isComma = Character.toString(text.charAt(5));

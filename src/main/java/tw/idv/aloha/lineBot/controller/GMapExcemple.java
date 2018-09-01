@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -17,6 +20,24 @@ public class GMapExcemple {
 			+ "&key=AIzaSyAYmC8oUYc9DGAZn8hqZKakFeclhAbTRSI";
 
 	public static void main(String[] args) throws Exception {
+		
+		Boolean isGreater = false;
+		Date date = new Date() ;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm") ;
+		dateFormat.format(date);
+		System.out.println(dateFormat.format(date));
+
+		try {
+			if(dateFormat.parse(dateFormat.format(date)).after(dateFormat.parse("21:00")))
+			{
+			    System.out.println("Current time is greater than 12.07");
+			}else{
+			    System.out.println("Current time is less than 12.07");
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Gson gson = new Gson();
 		// 讀回json字串
 		InputStream is = new URL(TEXT_SEARCH_URL).openStream();
