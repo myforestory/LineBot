@@ -40,12 +40,19 @@ public class GMapSearch {
 	}
 
 	// 關鍵字搜尋
-	public String getURLByText(String content) { // 西門，鐵板燒
-		String placeName = content.substring(0, 2);// 西門
-		String foodName = content.substring(3, content.length());// 鐵板燒
+	public String getURLByText(String content, int placeLength) { // 西門，鐵板燒
+		String placeName = "";
+		String foodName = "";
+		placeName = content.substring(0, placeLength);// 西門,北屯區，香格里拉
+		foodName = content.substring(placeLength+1, content.length());// 鐵板燒	
 		String URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
 				+ "key=AIzaSyB2ZeC9Pb8EW7rWgimJBczrWozGhCLz-u4" + "&query=" + placeName + "+" + foodName;
 		return URL;
+		
+//		if(placeLength == 2){
+//			placeName = content.substring(0, 2);// 西門
+//			foodName = content.substring(3, content.length());// 鐵板燒
+//		}
 		// https://maps.googleapis.com/maps/api/place/textsearch/json?
 		// query=%E8%A5%BF%E9%96%80+%E9%90%B5%E6%9D%BF%E7%87%92&language=zh-TW&key=AIzaSyAYmC8oUYc9DGAZn8hqZKakFeclhAbTRSI
 	}

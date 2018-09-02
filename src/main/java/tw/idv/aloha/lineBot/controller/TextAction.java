@@ -38,27 +38,34 @@ public class TextAction extends LineBotRSController {
 		return textTemplate;
 	}
 
-	// 我想吃.....show one
-	private static String recommend(String text) {
+	private static String recommend(String text) {// 我想吃.....show one
 		String textTemplate = "";
-		if(text.length() <= 7){
+		if(text.length() < 7){
 			textTemplate = MessageTemplate.textMessage(
 				"請輸入正確的格式喔！\\n我想吃＋地名＋食物\\n例如: 我想吃三重，牛排 "
 			);
 		} else {
-			String isComma = Character.toString(text.charAt(5));
-			if (isComma.equals(",") || isComma.equals("，")) {
-				GMapSearch gMap = new GMapSearch();
-				String keyword = text.substring(3, text.length());
-				String callbackURL = gMap.getURLByText(keyword);
+			String isComma5 = Character.toString(text.charAt(5)); //地名兩個字
+			String isComma6 = Character.toString(text.charAt(6)); //地名三個字
+			String isComma7 = Character.toString(text.charAt(7)); //地名四個字
+			String callbackURL = ""; //傳回網址
+			GMapSearch gMap = new GMapSearch();
+			String keyword = text.substring(3, text.length());
+			// 綜合清單
+			if (isComma5.equals(",") || isComma5.equals("，")) {
+				callbackURL = gMap.getURLByText(keyword, 2);
 				textTemplate = LocationAction.getGMapSearch(callbackURL);
-				// 綜合清單
+			} else if (isComma6.equals(",") || isComma6.equals("，")) {
+				callbackURL = gMap.getURLByText(keyword ,3);
+			} else if (isComma7.equals(",") || isComma7.equals("，")) {
+				callbackURL = gMap.getURLByText(keyword ,4);
 			} else {
 				//textMessage(String text)
 				textTemplate = MessageTemplate.textMessage(
-					"地名只能有兩個字喔！ 例如: 我想吃三重，牛排 "
+					"可以換別的關鍵字搜搜看喔！ 例如: 我想吃三重，牛排 "
 				);
 			}
+			textTemplate = LocationAction.getGMapSearch(callbackURL);
 		}
 		
 		return textTemplate;
