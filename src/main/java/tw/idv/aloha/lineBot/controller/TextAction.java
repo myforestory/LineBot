@@ -10,7 +10,7 @@ public class TextAction extends LineBotRSController {
 	public static String callbackMessageText(String text) {
 		String callbackMessage = "";
 		try{
-			if (text.toLowerCase().equals("aloha推薦")) {
+			if (text.toLowerCase().equals("aloha推薦")||text.toLowerCase().equals("好餓")) {
 				callbackMessage = isRecommend(text);
 				// } else if (text.substring(0 ,7).equals("我想吃最好吃的")){
 				// callbackMessage = recommendBestOne(text);

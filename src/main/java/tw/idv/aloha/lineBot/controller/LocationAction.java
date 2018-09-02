@@ -21,7 +21,7 @@ public class LocationAction {
 		List<Map<String, Object>> searchList = gMap.gMapSearch(callbackURL);
 		if(searchList.size() == 0){
 			locationTemplate = MessageTemplate.textMessage(
-				"拍謝，你附近沒有好吃的，換個地方試試！"
+				"拍謝，這個位置附近沒有好吃的，換個地方試試！"
 			);
 		} else {
 			// Get RandomOne Map Research //隨機一家
