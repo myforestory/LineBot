@@ -139,9 +139,11 @@ public class GMapSearch {
 		for (Map<String, Object> callbackMap : searchList) {
 			Double rating = Double.parseDouble(callbackMap.get("rating").toString());
 			if (rating > ratingBetter) { // 如果在評分大於3.5
-				if (isBewteen && callbackMap.get("open_now").equals("true")) { // 如果在11~20 顯示開的
-					randomList.add(callbackMap);
-					continue;
+				if (isBewteen) {
+					if(callbackMap.get("open_now").equals("true")) { // 如果在11~20 顯示開的
+						randomList.add(callbackMap);
+						continue;
+					}
 				} else { // 如果不在11~20 顯示開與不開的
 					randomList.add(callbackMap);
 					continue;
