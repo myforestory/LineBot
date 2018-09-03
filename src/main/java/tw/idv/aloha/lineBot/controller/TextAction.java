@@ -31,7 +31,7 @@ public class TextAction extends LineBotRSController {
 		//buttonTemplateFromString(String altText, String text, String label, String URI)
 		textTemplate = MessageTemplate.buttonTemplateFromString(
 			"你在哪ㄋ",
-			"你在哪呢？\\n也可輸入：\\n我想吃＋地名＋想吃什麼\\n例：我想吃西門，咖哩飯\\n或者 我想吃很多炒麵",
+			"你在哪呢？\\n也可輸入：\\n我想吃＋地名＋想吃什麼\\n例：我想吃西門，鐵板燒\\n或者 我想吃很多炒麵",
 			"給我位置",
 			"line://nv/location"
 		);

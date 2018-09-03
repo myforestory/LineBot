@@ -148,8 +148,17 @@ public class GMapSearch {
 					randomList.add(callbackMap);
 					continue;
 				}
-			} else {
-				
+			} else {		
+			}
+		}
+		if(randomList.size() == 0){
+			for (Map<String, Object> callbackMap : searchList) {
+				Double rating = Double.parseDouble(callbackMap.get("rating").toString());
+				if (rating > ratingBetter) { // 如果在評分大於3.5
+						randomList.add(callbackMap);
+						continue;
+				} else {		
+				}
 			}
 		}
 		int length = randomList.size();
