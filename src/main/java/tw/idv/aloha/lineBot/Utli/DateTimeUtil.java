@@ -2,6 +2,7 @@ package tw.idv.aloha.lineBot.Utli;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateTimeUtil {
@@ -23,5 +24,20 @@ public class DateTimeUtil {
 			e.printStackTrace();
 		}
 		return isBetween;
+	}
+	
+	public String dayOpeningTime(String allWeek){
+		//"weekday_text" : ["星期一: 08:00 – 01:00","星期二: 08:00 – 01:00", "星期三: 08:00 – 01:00"]
+		String todayOpeningTime = "";
+		Date date = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+		
+		
+		
+		
+		
+		return todayOpeningTime;
 	}
 }

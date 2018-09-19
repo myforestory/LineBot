@@ -5,7 +5,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.annotation.Resource;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.springframework.stereotype.Controller;
@@ -13,19 +17,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import tw.idv.aloha.lineBot.Utli.MessageTemplate;
-import tw.idv.aloha.lineBot.controller.TextAction;
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.LineMessagingClientBuilder;
+import com.linecorp.bot.client.LineMessagingClientImpl;
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.TextMessage;
 
+import tw.idv.aloha.lineBot.Utli.MessageTemplate;
+import tw.idv.aloha.lineBot.dao.JdbcDAO;
 import tw.idv.aloha.lineBot.model.Event;
 import tw.idv.aloha.lineBot.model.EventWrapper;
 
 @Controller
 public class LineBotRSController {
+
+	@Resource(name = "jdbcDao")
+	private JdbcDAO jdbcDAO;
 	// ==== ngrok ====
-//	private String accessToken = "uN4Adp2siY1bd4k2vcCzyN9wKGkHTONWuHmNAk+TcQE3GkKhUkOKab9CmbVNiV+K+bsDgqtq78ApPUfAq8b6RWYl1SBHrhnVNbvg37FQSaH4UAR51RGGNM+PouklBcquzR8wkeuAd0m5LppYZGtAdwdB04t89/1O/w1cDnyilFU=";
+	private String accessToken = "uN4Adp2siY1bd4k2vcCzyN9wKGkHTONWuHmNAk+TcQE3GkKhUkOKab9CmbVNiV+K+bsDgqtq78ApPUfAq8b6RWYl1SBHrhnVNbvg37FQSaH4UAR51RGGNM+PouklBcquzR8wkeuAd0m5LppYZGtAdwdB04t89/1O/w1cDnyilFU=";
 
 	// ==== heroku ====
-	 private String accessToken = "0kIC5VtMwqnF7zFuqAZLasS8fJp5nt5JDG6xon92Bv1OHw2gMPi7B8RvAdGC+18uJ0Do2VMyUg1etgigLszNGKJZMvggJijfX9JBs190jglt1ere6dXDj8gOIV1vLGjlx38cGtB2T2bYJSejYsSbOQdB04t89/1O/w1cDnyilFU=";
+	// private String accessToken =
+	// "0kIC5VtMwqnF7zFuqAZLasS8fJp5nt5JDG6xon92Bv1OHw2gMPi7B8RvAdGC+18uJ0Do2VMyUg1etgigLszNGKJZMvggJijfX9JBs190jglt1ere6dXDj8gOIV1vLGjlx38cGtB2T2bYJSejYsSbOQdB04t89/1O/w1cDnyilFU=";
 
 	@ResponseBody
 	@RequestMapping(value = "/callback")
@@ -34,13 +49,12 @@ public class LineBotRSController {
 			switch (event.getType()) {
 			case "join":
 				String messageJoin = "";
-				messageJoin = MessageTemplate.textMessage(
-						"大感謝！加我好友 可以試著輸入\\nAloha推薦\\n大感謝！"
-					);
+				messageJoin = MessageTemplate.textMessage("可以試著輸入：Aloha推薦\\n"
+														+ "Try to type in：Recommendation");
 				sendResponseMessages(event.getReplyToken(), messageJoin);
 				break;
 			case "message": // 當event為message時進入此case執行，其他event(如follow、unfollow、leave等)的case在此省略，您可自己增加
-				System.out.print(event.getMessage().getText()+"====");
+				System.out.print(event.getMessage().getText() + "====");
 				switch (event.getMessage().getType()) {
 				case "text": // 當message
 								// type為text時，進入此case執行，目前子是將使用者傳來的文字訊息在其前加上echo字串後，回傳給使用者
@@ -75,12 +89,43 @@ public class LineBotRSController {
 			}
 		}
 	}
+	
+	private void typeIsMessage(String replyToken, String text) {
+		String textTemplate = TextAction.callbackMessageText(text);
+		sendResponseMessages(replyToken, textTemplate);
+	}
+	
+	private void typeIsLocation(String replyToken, String latitude, String longitude) {
+		String locationTemplate = LocationAction.callbackMessageLocation(latitude, longitude);
+		sendResponseMessages(replyToken, locationTemplate);
+	}
+	
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/push")
+	public void push() {
+		LineMessagingClient client = new LineMessagingClientBuilder(accessToken).build();
+		List<Message> list = new ArrayList<>();
+		list.add(new TextMessage("GOooood"));
+		list.add(new TextMessage("Yesssssssss"));
+		
+		PushMessage msg = new PushMessage("Ue504bccb322175463f344bbf90dad918", list);
+		client.pushMessage(msg);
+		try {
+			jdbcDAO.query();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	protected void sendResponseMessages(String replyToken, String message) {
 		System.out.println(message);
 		try {
 			message = "{\"replyToken\":\"" + replyToken + "\",\"messages\":" + message + "}"; // 回傳的json格式訊息
-//			System.out.println(System.getProperty("line.separator") + message);
+			// System.out.println(System.getProperty("line.separator") +
+			// message);
 			URL myurl = new URL("https://api.line.me/v2/bot/message/reply"); // 回傳的網址
 			HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection(); // 使用HttpsURLConnection建立https連線
 			con.setRequestMethod("POST");// 設定post方法
@@ -101,13 +146,13 @@ public class LineBotRSController {
 		}
 	}
 
-	private void typeIsMessage(String replyToken, String text) {
-		String textTemplate = TextAction.callbackMessageText(text);
-		sendResponseMessages(replyToken, textTemplate);
+	protected void sendResponseMessagesNew(String replyToken, String message) {
+		LineMessagingClient client = new LineMessagingClientBuilder(accessToken).build();
+		List<Message> list = new ArrayList<>();
+		list.add(new TextMessage("GOooood"));
+		list.add(new TextMessage("Yesssssssss"));
+		ReplyMessage msg = new ReplyMessage(replyToken, list); 
+		client.replyMessage(msg);
 	}
 
-	private void typeIsLocation(String replyToken, String latitude, String longitude) {
-		String locationTemplate = LocationAction.callbackMessageLocation(latitude, longitude);
-		sendResponseMessages(replyToken, locationTemplate);
-	}
 }

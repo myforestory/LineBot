@@ -4,13 +4,13 @@ package tw.idv.aloha.lineBot.Utli;
 import java.util.Map;
 
 public class MessageTemplate {
-
 	public static String textTemplate() {
 		String callbackTextTemplate = "";
 		return callbackTextTemplate;
 	}
 
 	public static String buttonTemplateFromMap(Map<String, Object> locationMap) {
+
 		String callbackButtonTemplate = "";
 		double rating = Double.parseDouble(locationMap.get("rating").toString());
 		String name = (String) locationMap.get("name");
@@ -30,9 +30,36 @@ public class MessageTemplate {
 				+ "key=AIzaSyB2ZeC9Pb8EW7rWgimJBczrWozGhCLz-u4&" + "photoreference=" + thumbnailImageUrl
 				+ "&maxwidth=1024";
 
-		callbackButtonTemplate = "[{\"type\":\"template\",\"altText\":\"" + name + "\",\"template\":{"
-				+ "\"type\":\"buttons\",\"thumbnailImageUrl\":\"" + thumbnailImageUrl + "\",\"text\":\"" + text
-				+ "\",\"actions\":[{" + "\"type\":\"uri\",\"label\":\"查看地圖\",\"uri\":\"" + place_URI + "\"}]}}]";
+		callbackButtonTemplate = "[{\"type\":\"template\",\"altText\":\"" + name + "\","
+				+ "\"template\":{"
+					+ "\"type\":\"buttons\","
+					+ "\"thumbnailImageUrl\":\"" + thumbnailImageUrl + "\","
+					+ "\"text\":\"" + text
+					+ "\",\"actions\":"
+						+ "[{" + "\"type\":\"uri\","
+								+ "\"label\":\"查看地圖\","
+								+ "\"uri\":\"" + place_URI + "\""
+						+ "}]"
+					+ "}"
+				+ "}]";
+		
+		
+//		callbackButtonTemplate = "[{\"type\":\"template\",\"altText\":\"" + name + "\","
+//				+ "\"template\":{"
+//					+ "\"type\":\"buttons\","
+//					+ "\"thumbnailImageUrl\":\"" + thumbnailImageUrl + "\","
+//					+ "\"text\":\"" + text
+//					+ "\",\"actions\":"
+//						+ "[{" + "\"type\":\"message\","
+//								+ "\"label\":\"查看地圖\","
+//								+ "\"text\":\"" + "123" + "\""
+//						+ "},"
+//						+ "{" + "\"type\":\"message\","
+//								+ "\"label\":\"查看地圖\","
+//								+ "\"text\":\"" + "123" + "\""
+//						+ "}]"
+//					+ "}"
+//				+ "}]";
 		return callbackButtonTemplate;
 	}
 	
@@ -149,11 +176,49 @@ public class MessageTemplate {
 
 	public static String buttonTemplateFromString(String altText, String text, String label, String URI) {
 		String callbackButtonTemplate = "";
-		callbackButtonTemplate = "[{\"type\":\"template\",\"altText\":\"+" + altText + "+\",\"template\":{"
-				+ "\"type\":\"buttons\",\"text\":\"" + text + "\",\"actions\":[{" + "\"type\":\"uri\",\"label\":\""
-				+ label + "\",\"uri\":\"" + URI + "\"}]}}]";
+		callbackButtonTemplate = "[{"
+				+ "\"type\":\"template\","
+				+ "\"altText\":\"+" + altText + "+\","
+				+ "\"template\":{"
+					+ "\"type\":\"buttons\","
+					+ "\"text\":\"" + text + "\","
+					+ "\"actions\":["
+						+ "{" + 
+							"\"type\":\"uri\","
+							+ "\"label\":\""+ label + "\","
+							+ "\"uri\":\"" + URI + "\"}"
+						+ "]"
+					+ "}"
+				+ "}]";
 		return callbackButtonTemplate;
 	}
+	
+	public static String comfirmTemplateFromString(String altText, String text, 
+												   String yesType, String yesLabel, String yesTypeTitle, String yesContent,
+												   String noType, String noLabel, String noTypeTitle, String noContent) {
+		String callbackButtonTemplate = "";
+		callbackButtonTemplate = "[{"
+				+ "\"type\":\"template\","
+				+ "\"altText\":\"+" + altText + "+\","
+				+ "\"template\":{"
+					+ "\"type\":\"confirm\","
+					+ "\"text\":\"" + text + "\","
+					+ "\"actions\":["
+						+ "{" + 
+							"\"type\":\""+ yesType +"\","
+							+ "\"label\":\""+ yesLabel + "\","
+							+ "\""+ yesTypeTitle +"\":\"" + yesContent + 
+						"\"},"
+						+ "{" + 
+							"\"type\":\""+ noType +"\","
+							+ "\"label\":\""+ noLabel + "\","
+							+ "\""+ noTypeTitle +"\":\"" + noContent + 
+						"\"}"
+					+ "]"
+				+ "}"
+			+ "}]";
+		return callbackButtonTemplate;
+	}	
 
 	public static String textMessage(String text) {
 		String callbackText = "";

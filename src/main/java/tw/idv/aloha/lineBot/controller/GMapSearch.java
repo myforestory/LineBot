@@ -36,7 +36,18 @@ public class GMapSearch {
 		return URL;
 		// https://maps.googleapis.com/maps/api/place/textsearch/json?
 		// key=AIzaSyB2ZeC9Pb8EW7rWgimJBczrWozGhCLz-u4&location=0,0&rankby=distance&type=restaurant&language=zh-TW
-
+	}
+	
+	//完整資訊GMap
+	public String getGMapDetailURL(String placeId) {
+		String URL = "https://maps.googleapis.com/maps/api/place/details/json?"
+				+ "placeid=" + placeId
+				+ "&key=AIzaSyAYmC8oUYc9DGAZn8hqZKakFeclhAbTRSI"
+				+ "&rankby=distance&type=restaurant&language=zh-TW";
+		return URL;
+		//https://maps.googleapis.com/maps/api/place/details/json?
+		//placeid=ChIJ-6uctZ6pQjQRbOssmdGcz9k&key=AIzaSyAYmC8oUYc9DGAZn8hqZKakFeclhAbTRSI
+		//&rankby=distance&type=restaurant&language=zh-TW";
 	}
 
 	// 關鍵字搜尋
@@ -56,7 +67,63 @@ public class GMapSearch {
 		// https://maps.googleapis.com/maps/api/place/textsearch/json?
 		// query=%E8%A5%BF%E9%96%80+%E9%90%B5%E6%9D%BF%E7%87%92&language=zh-TW&key=AIzaSyAYmC8oUYc9DGAZn8hqZKakFeclhAbTRSI
 	}
+	
+	public Map<String, Object> gMapOneDetailSearch(String URL){
+		Gson gson = new Gson();
+		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
+		StringBuilder sb;
+		try {
+			InputStream is = new URL(URL).openStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			sb = new StringBuilder();
+			String str;
+			while ((str = br.readLine()) != null)
+				sb.append(str);
+			br.close();
+			if (sb.length() > 0) {
+				JsonObject jObj = gson.fromJson(sb.toString(), JsonObject.class);
+				String opening_hours = "", reviewText = "";
+				JsonObject obj = jObj.get("result").getAsJsonObject();
+				if (obj.has("opening_hours"))
+					opening_hours = obj.getAsJsonObject("opening_hours").getAsJsonArray("weekday_text").toString();
+				if (obj.has("reviews"))	
+					reviewText = String.valueOf(obj.getAsJsonArray("reviews").get(0).getAsJsonObject().get("text"));
+					
+					
+//					if (obj.has("place_id"))
+//						place_id = obj.get("place_id").getAsString();
+//					if (obj.has("rating"))
+//						rating = String.valueOf(obj.get("rating").getAsFloat());
+//					if (obj.has("geometry")) {
+//						longitude = String.valueOf(obj.get("geometry").getAsJsonObject().get("location")
+//								.getAsJsonObject().get("lng").getAsDouble());
+//						latitude = String.valueOf(obj.get("geometry").getAsJsonObject().get("location")
+//								.getAsJsonObject().get("lat").getAsDouble());
+//					}
+//					if (obj.has("opening_hours"))
+//						open_now = String.valueOf(obj.get("opening_hours").getAsJsonObject().get("open_now"));
+//
+//					if (obj.has("photos")) {
+//						JsonArray jArrayphotos = obj.get("photos").getAsJsonArray();
+//						JsonObject objPhotos = jArrayphotos.get(0).getAsJsonObject();
+//						photo_reference = String.valueOf(objPhotos.get("photo_reference"));
+//						photo_reference = photo_reference.replaceAll("\"", "");
+//					}
+//					resultMap.put("name", name);
+//					resultMap.put("place_id", place_id);
+//					resultMap.put("rating", rating);
+//					resultMap.put("longitude", longitude);
+//					resultMap.put("latitude", latitude);
+//					resultMap.put("open_now", open_now);
+//					resultMap.put("photo_reference", photo_reference);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return resultMap;
+	}
+	
 	public List<Map<String, Object>> gMapSearch(String URL) {
 		Gson gson = new Gson();
 		List<Map<String, Object>> searchList = new ArrayList<Map<String, Object>>();

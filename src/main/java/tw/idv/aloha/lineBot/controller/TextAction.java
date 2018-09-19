@@ -10,10 +10,12 @@ public class TextAction extends LineBotRSController {
 	public static String callbackMessageText(String text) {
 		String callbackMessage = "";
 		try{
-			if (text.toLowerCase().equals("aloha推薦")||text.toLowerCase().equals("好餓")) {
+			if (text.toLowerCase().equals("aloha推薦") || text.toLowerCase().equals("好餓")) {
 				callbackMessage = isRecommend(text);
-				// } else if (text.substring(0 ,7).equals("我想吃最好吃的")){
-				// callbackMessage = recommendBestOne(text);
+			// } else if (text.substring(0 ,7).equals("我想吃最好吃的")){
+			// callbackMessage = recommendBestOne(text);
+			} else if (text.toLowerCase().equals("english") || text.trim().toLowerCase().equals("recommendation")) {
+				callbackMessage = englishVersion(text);
 			} else if (text.length() >= 5 && text.substring(0, 5).equals("我想吃很多")) {
 				callbackMessage = recommendMutli(text);
 			} else if (text.substring(0, 3).equals("我想吃")) {
@@ -29,15 +31,39 @@ public class TextAction extends LineBotRSController {
 	private static String isRecommend(String text) {
 		String textTemplate = "";
 		//buttonTemplateFromString(String altText, String text, String label, String URI)
-		textTemplate = MessageTemplate.buttonTemplateFromString(
-			"你在哪ㄋ",
-			"你在哪呢？\\n也可輸入：\\n我想吃＋地名＋想吃什麼\\n例：我想吃西門，鐵板燒\\n或者 我想吃很多炒麵",
-			"給我位置",
-			"line://nv/location"
+		textTemplate = MessageTemplate.comfirmTemplateFromString(
+			"你在哪ㄋ", //altText
+			"你在哪呢？\\n也可輸入：\\n我想吃＋地名＋想吃什麼\\n例：我想吃西門，鐵板燒\\n或者 我想吃很多炒麵", //text
+			"uri", //yesType
+			"給我位置", //yesLabel
+			"uri", //yesTypeTitle
+			"line://nv/location", //yesContent
+			"message", //noType
+			"English", //noLabel
+			"text", //noTypeTitle
+			"english" //noContent
 		);
 		return textTemplate;
 	}
-
+	
+	private static String englishVersion(String text){
+		String textTemplate = "";
+		//buttonTemplateFromString(String altText, String text, String label, String URI)
+		textTemplate = MessageTemplate.comfirmTemplateFromString(
+			"你在哪ㄋ", //altText
+			"你在哪呢？\\n也可輸入：\\n我想吃＋地名＋想吃什麼\\n例：我想吃西門，鐵板燒\\n或者 我想吃很多炒麵", //text
+			"uri", //yesType
+			"給我位置", //yesLabel
+			"uri", //yesTypeTitle
+			"line://nv/location", //yesContent
+			"postback", //noType
+			"English", //noLabel
+			"data", //noTypeTitle
+			"english" //noContent
+		);
+		return textTemplate;
+	}
+	
 	private static String recommend(String text) {// 我想吃.....show one
 		String textTemplate = "";
 		if(text.length() < 7){
