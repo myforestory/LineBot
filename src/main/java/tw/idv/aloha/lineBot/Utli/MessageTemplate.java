@@ -9,7 +9,7 @@ public class MessageTemplate {
 		return callbackTextTemplate;
 	}
 
-	public static String buttonTemplateFromMap(Map<String, Object> locationMap) {
+	public static String buttonTemplateFromMap(Map<String, Object> locationMap,  String backText) { //single button template
 
 		String callbackButtonTemplate = "";
 		double rating = Double.parseDouble(locationMap.get("rating").toString());
@@ -39,31 +39,59 @@ public class MessageTemplate {
 						+ "[{" + "\"type\":\"uri\","
 								+ "\"label\":\"查看地圖\","
 								+ "\"uri\":\"" + place_URI + "\""
+						+ "},"
+						+ "{" + "\"type\":\"message\","
+								+ "\"label\":\"驚喜(需在台灣)\","
+								+ "\"text\":\"" + place_URI + "\""
 						+ "}]"
 					+ "}"
 				+ "}]";
 		
-		
-//		callbackButtonTemplate = "[{\"type\":\"template\",\"altText\":\"" + name + "\","
-//				+ "\"template\":{"
-//					+ "\"type\":\"buttons\","
-//					+ "\"thumbnailImageUrl\":\"" + thumbnailImageUrl + "\","
-//					+ "\"text\":\"" + text
-//					+ "\",\"actions\":"
-//						+ "[{" + "\"type\":\"message\","
-//								+ "\"label\":\"查看地圖\","
-//								+ "\"text\":\"" + "123" + "\""
-//						+ "},"
-//						+ "{" + "\"type\":\"message\","
-//								+ "\"label\":\"查看地圖\","
-//								+ "\"text\":\"" + "123" + "\""
-//						+ "}]"
-//					+ "}"
-//				+ "}]";
 		return callbackButtonTemplate;
 	}
 	
-	public static String buttonTemplateFromMap1(Map<String, Object> locationMap) {
+	
+	public static String buttonTemplateFromMapVerEg(Map<String, Object> locationMap) { //single button template English version
+
+		String callbackButtonTemplate = "";
+		double rating = Double.parseDouble(locationMap.get("rating").toString());
+		String name = (String) locationMap.get("name");
+		String place_id = (String) locationMap.get("place_id");
+		String place_latitude = (String) locationMap.get("latitude");
+		String place_longitude = (String) locationMap.get("longitude");
+		String open_now = (String) locationMap.get("open_now");
+		String open_now_Taiwan = "";
+		open_now_Taiwan = (open_now.equals("true")) ? "opening" : "break";
+		String thumbnailImageUrl = (String) locationMap.get("photo_reference");
+		String text = "";
+		text = "Name：" + name +"\\nPrice：" + rating + "" + "\\nOpining：" + open_now_Taiwan;
+
+		String place_URI = "https://www.google.com/maps/search/?api=1&query=" + place_latitude + "," + place_longitude
+				+ "&query_place_id=" + place_id;
+		thumbnailImageUrl = "https://maps.googleapis.com/maps/api/place/photo?"
+				+ "key=AIzaSyB2ZeC9Pb8EW7rWgimJBczrWozGhCLz-u4&" + "photoreference=" + thumbnailImageUrl
+				+ "&maxwidth=1024";
+
+		callbackButtonTemplate = "[{\"type\":\"template\",\"altText\":\"" + name + "\","
+				+ "\"template\":{"
+					+ "\"type\":\"buttons\","
+					+ "\"thumbnailImageUrl\":\"" + thumbnailImageUrl + "\","
+					+ "\"text\":\"" + text
+					+ "\",\"actions\":"
+						+ "[{" + "\"type\":\"uri\","
+								+ "\"label\":\"Location\","
+								+ "\"uri\":\"" + place_URI + "\""
+						+ "},"
+						+ "{" + "\"type\":\"message\","
+								+ "\"label\":\"驚喜(需在台灣)\","
+								+ "\"text\":\"" + place_URI + "\""
+						+ "}]"
+					+ "}"
+				+ "}]";
+		return callbackButtonTemplate;
+	}
+	
+	public static String buttonTemplateFromMap1(Map<String, Object> locationMap) { //multiple button template English version
 		String callbackButtonTemplate = "";
 		double rating = Double.parseDouble(locationMap.get("rating").toString());
 		String name = (String) locationMap.get("name");
@@ -174,7 +202,8 @@ public class MessageTemplate {
 		return callbackButtonTemplate;
 	}
 
-	public static String buttonTemplateFromString(String altText, String text, String label, String URI) {
+	public static String buttonTemplateSingle(String altText, String text, 
+			 								  String type, String label, String typeTitle, String content) {
 		String callbackButtonTemplate = "";
 		callbackButtonTemplate = "[{"
 				+ "\"type\":\"template\","
@@ -184,18 +213,18 @@ public class MessageTemplate {
 					+ "\"text\":\"" + text + "\","
 					+ "\"actions\":["
 						+ "{" + 
-							"\"type\":\"uri\","
+							"\"type\":\""+ type +"\","
 							+ "\"label\":\""+ label + "\","
-							+ "\"uri\":\"" + URI + "\"}"
+							+ "\""+ typeTitle +"\":\"" + content + "\"}"
 						+ "]"
 					+ "}"
 				+ "}]";
 		return callbackButtonTemplate;
 	}
 	
-	public static String comfirmTemplateFromString(String altText, String text, 
-												   String yesType, String yesLabel, String yesTypeTitle, String yesContent,
-												   String noType, String noLabel, String noTypeTitle, String noContent) {
+	public static String comfirmTemplate(String altText, String text, 
+										 String yesType, String yesLabel, String yesTypeTitle, String yesContent,
+									     String noType, String noLabel, String noTypeTitle, String noContent) {  //confirm(double) template
 		String callbackButtonTemplate = "";
 		callbackButtonTemplate = "[{"
 				+ "\"type\":\"template\","
@@ -220,13 +249,13 @@ public class MessageTemplate {
 		return callbackButtonTemplate;
 	}	
 
-	public static String textMessage(String text) {
+	public static String textMessage(String text) {  //text message
 		String callbackText = "";
 		callbackText = "[{\"type\": \"text\", \"text\": \"" + text + "\"}]";
 		return callbackText;
 	}
 
-	public static String xxx() {
+	public static String xxx() {  //backup
 		String callbackText = "";
 		return callbackText;
 	}

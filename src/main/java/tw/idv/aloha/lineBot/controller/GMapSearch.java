@@ -49,6 +49,45 @@ public class GMapSearch {
 		//placeid=ChIJ-6uctZ6pQjQRbOssmdGcz9k&key=AIzaSyAYmC8oUYc9DGAZn8hqZKakFeclhAbTRSI
 		//&rankby=distance&type=restaurant&language=zh-TW";
 	}
+	
+	//取得東北西南座標
+	public String getGmapCoordinateURL(String content, int placeLength){
+		String placeName = "";
+		placeName = content.substring(0, placeLength);// 西門
+
+		String URL = "https://maps.googleapis.com/maps/api/place/details/json?"
+				+ "query=" + placeName
+				+ "&key=AIzaSyAYmC8oUYc9DGAZn8hqZKakFeclhAbTRSI";
+		return URL;
+
+		//https://maps.googleapis.com/maps/api/place/textsearch/json?
+		//query=%E8%A5%BF%E9%96%80&
+		//key=AIzaSyAYmC8oUYc9DGAZn8hqZKakFeclhAbTRSI
+	}
+	
+	//取得foodName
+		public String getfoodName(String content, int placeLength){
+			String foodName = "";
+			foodName = content.substring(placeLength+1, content.length());// 鐵板燒	
+
+			return foodName;
+		}
+	
+	//取得IfoodieURL
+	public String getIfoodieURL(String neLat, String neLng, String swLat, String swLng, String foodName){
+
+		String URL = "https://ifoodie.tw/api/restaurant/explore/?"
+				+ "q=" + foodName
+				+ "&sw=" + swLat + "," + swLng
+				+ "&ne=" + neLat + "," + neLng
+				+ "&offset=0&limit=20";
+		return URL;
+		//https://ifoodie.tw/api/restaurant/explore/?
+		//q=%E7%89%9B%E6%8E%92
+		//&sw=25.0465547,121.5091539
+		//&ne=25.0416013,121.502824
+		//&offset=0&limit=20
+	}
 
 	// 關鍵字搜尋
 	public String getURLByText(String content, int placeLength) { // 西門，鐵板燒
@@ -130,6 +169,9 @@ public class GMapSearch {
 
 		StringBuilder sb;
 		try {
+			System.out.println();
+			System.out.println(URL);
+			System.out.println();
 			InputStream is = new URL(URL).openStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			sb = new StringBuilder();
@@ -173,6 +215,124 @@ public class GMapSearch {
 					resultMap.put("latitude", latitude);
 					resultMap.put("open_now", open_now);
 					resultMap.put("photo_reference", photo_reference);
+					searchList.add(resultMap);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return searchList;
+	}
+	
+	public List<Map<String, Object>> gMapCoordinate(String URL) {
+		Gson gson = new Gson();
+		List<Map<String, Object>> searchList = new ArrayList<Map<String, Object>>();
+
+		StringBuilder sb;
+		try {
+			System.out.println();
+			System.out.println(URL);
+			System.out.println();
+			InputStream is = new URL(URL).openStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			sb = new StringBuilder();
+			String str;
+			while ((str = br.readLine()) != null)
+				sb.append(str);
+			br.close();
+			if (sb.length() > 0) {
+				JsonObject jObj = gson.fromJson(sb.toString(), JsonObject.class);
+				JsonArray jArray = jObj.get("results").getAsJsonArray();
+				for (int i = 0; i < jArray.size(); i++) {
+					Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+					JsonObject obj = jArray.get(i).getAsJsonObject();
+					String northeastLat = "", northeastLng = "", southwestLat = "", southwestLng = "";
+					if (obj.has("geometry")) {
+						northeastLat = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
+								.getAsJsonObject().getAsJsonObject().get("northeast")
+								.getAsJsonObject().get("lat").getAsDouble());
+						northeastLng = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
+								.getAsJsonObject().getAsJsonObject().get("northeast")
+								.getAsJsonObject().get("lng").getAsDouble());
+						southwestLat = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
+								.getAsJsonObject().getAsJsonObject().get("southwest")
+								.getAsJsonObject().get("lat").getAsDouble());
+						southwestLng = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
+								.getAsJsonObject().getAsJsonObject().get("southwest")
+								.getAsJsonObject().get("lng").getAsDouble());
+					}
+					resultMap.put("neLat", northeastLat);
+					resultMap.put("neLng", northeastLng);
+					resultMap.put("swLat", southwestLat);
+					resultMap.put("swLng", southwestLng);
+					searchList.add(resultMap);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return searchList;
+	}
+	
+	public List<Map<String, Object>> ifoodieSearch(String URL) {
+		Gson gson = new Gson();
+		List<Map<String, Object>> searchList = new ArrayList<Map<String, Object>>();
+
+		StringBuilder sb;
+		try {
+			System.out.println();
+			System.out.println(URL);
+			System.out.println();
+			InputStream is = new URL(URL).openStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			sb = new StringBuilder();
+			String str;
+			while ((str = br.readLine()) != null)
+				sb.append(str);
+			br.close();
+			if (sb.length() > 0) {
+				JsonObject jObj = gson.fromJson(sb.toString(), JsonObject.class);
+				JsonArray jArray = jObj.get("respon").getAsJsonArray();
+				for (int i = 0; i < jArray.size(); i++) {
+					Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+					JsonObject obj = jArray.get(i).getAsJsonObject();
+					String name = "", rating = "", opening_hours = "", open_now="", avg_price = "",
+							   lat = "", lng = "", phone = "", cover_url="", message="";
+					if (obj.has("name"))
+						name = obj.get("name").getAsString();
+					if (obj.has("rating"))
+						rating = String.valueOf(obj.get("rating").getAsFloat());
+					if (obj.has("opening_hours"))
+						opening_hours = obj.get("opening_hours").getAsString();
+					if (obj.has("name"))
+						name = obj.get("name").getAsString();
+//					if (obj.has("place_id"))
+//						place_id = obj.get("place_id").getAsString();
+//					if (obj.has("name"))
+//						name = obj.get("name").getAsString();
+//					if (obj.has("place_id"))
+//						place_id = obj.get("place_id").getAsString();
+//					
+//					
+//					
+//					if (obj.has("geometry")) {
+//						northeastLat = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
+//								.getAsJsonObject().getAsJsonObject().get("northeast")
+//								.getAsJsonObject().get("lat").getAsDouble());
+//						northeastLng = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
+//								.getAsJsonObject().getAsJsonObject().get("northeast")
+//								.getAsJsonObject().get("lng").getAsDouble());
+//						southwestLat = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
+//								.getAsJsonObject().getAsJsonObject().get("southwest")
+//								.getAsJsonObject().get("lat").getAsDouble());
+//						southwestLng = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
+//								.getAsJsonObject().getAsJsonObject().get("southwest")
+//								.getAsJsonObject().get("lng").getAsDouble());
+//					}
+//					resultMap.put("neLat", northeastLat);
+//					resultMap.put("neLng", northeastLng);
+//					resultMap.put("swLat", southwestLat);
+//					resultMap.put("swLng", southwestLng);
 					searchList.add(resultMap);
 				}
 			}
@@ -233,4 +393,52 @@ public class GMapSearch {
 		Map<String, Object> randomMap = randomList.get(randomIndex);
 		return randomMap;
 	}
+	
+	// Get RandomOne Map Research //隨機的一家 (Ifoodie)
+		public Map<String, Object> getIfoodieRandom(Map<String, Object> coordinateMap, String foodName) {
+			Random random = new Random();
+			DateTimeUtil dateTimeUtil = new DateTimeUtil();
+			List<Map<String, Object>> randomList = new ArrayList<Map<String, Object>>();
+			String neLat = "",neLng = "",swLat = "",swLng = "";
+			String ifoodieURL = "";
+			neLat = (String) coordinateMap.get("neLat");
+			neLng = (String) coordinateMap.get("neLng");
+			swLat = (String) coordinateMap.get("swLat");
+			swLng = (String) coordinateMap.get("swLng");
+			ifoodieURL = getIfoodieURL(neLat, neLng, swLat, swLng, foodName);
+			ifoodieSearch(ifoodieURL);
+			
+			
+			Boolean isBewteen = dateTimeUtil.isBetweenTime("20", "11");
+			double ratingBetter = 3.5;
+//			for (Map<String, Object> callbackMap : searchList) {
+//				Double rating = Double.parseDouble(callbackMap.get("rating").toString());
+//				if (rating > ratingBetter) { // 如果在評分大於3.5
+//					if (isBewteen) {
+//						if(callbackMap.get("open_now").equals("true")) { // 如果在11~20 顯示開的
+//							randomList.add(callbackMap);
+//							continue;
+//						}
+//					} else { // 如果不在11~20 顯示開與不開的
+//						randomList.add(callbackMap);
+//						continue;
+//					}
+//				} else {		
+//				}
+//			}
+//			if(randomList.size() == 0){
+//				for (Map<String, Object> callbackMap : searchList) {
+//					Double rating = Double.parseDouble(callbackMap.get("rating").toString());
+//					if (rating > ratingBetter) { // 如果在評分大於3.5
+//							randomList.add(callbackMap);
+//							continue;
+//					} else {		
+//					}
+//				}
+//			}
+			int length = randomList.size();
+			int randomIndex = random.nextInt(length);
+			Map<String, Object> randomMap = randomList.get(randomIndex);
+			return randomMap;
+		}
 }
