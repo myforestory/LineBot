@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,8 +56,8 @@ public class GMapSearch {
 		String placeName = "";
 		placeName = content.substring(0, placeLength);// 西門
 
-		String URL = "https://maps.googleapis.com/maps/api/place/details/json?"
-				+ "query=" + placeName
+		String URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
+				+ "query=台灣" + placeName
 				+ "&key=AIzaSyAYmC8oUYc9DGAZn8hqZKakFeclhAbTRSI";
 		return URL;
 
@@ -66,21 +67,27 @@ public class GMapSearch {
 	}
 	
 	//取得foodName
-		public String getfoodName(String content, int placeLength){
-			String foodName = "";
-			foodName = content.substring(placeLength+1, content.length());// 鐵板燒	
+	public String getfoodName(String content, int placeLength){
+		String foodName = "";
+		foodName = content.substring(placeLength+1, content.length());// 鐵板燒	
 
-			return foodName;
-		}
+		return foodName;
+	}
+	
+	//取得coordinate map
 	
 	//取得IfoodieURL
-	public String getIfoodieURL(String neLat, String neLng, String swLat, String swLng, String foodName){
-
+	public String getIfoodieURL(Map<String, Object> coordinateMap, String foodName){
+		String neLat = "",neLng = "",swLat = "",swLng = "";
+		neLat = (String) coordinateMap.get("neLat");
+		neLng = (String) coordinateMap.get("neLng");
+		swLat = (String) coordinateMap.get("swLat");
+		swLng = (String) coordinateMap.get("swLng");
 		String URL = "https://ifoodie.tw/api/restaurant/explore/?"
 				+ "q=" + foodName
 				+ "&sw=" + swLat + "," + swLng
 				+ "&ne=" + neLat + "," + neLng
-				+ "&offset=0&limit=20";
+				+ "&offset=0&limit=100";
 		return URL;
 		//https://ifoodie.tw/api/restaurant/explore/?
 		//q=%E7%89%9B%E6%8E%92
@@ -169,9 +176,6 @@ public class GMapSearch {
 
 		StringBuilder sb;
 		try {
-			System.out.println();
-			System.out.println(URL);
-			System.out.println();
 			InputStream is = new URL(URL).openStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			sb = new StringBuilder();
@@ -230,9 +234,6 @@ public class GMapSearch {
 
 		StringBuilder sb;
 		try {
-			System.out.println();
-			System.out.println(URL);
-			System.out.println();
 			InputStream is = new URL(URL).openStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			sb = new StringBuilder();
@@ -280,9 +281,6 @@ public class GMapSearch {
 
 		StringBuilder sb;
 		try {
-			System.out.println();
-			System.out.println(URL);
-			System.out.println();
 			InputStream is = new URL(URL).openStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			sb = new StringBuilder();
@@ -292,47 +290,43 @@ public class GMapSearch {
 			br.close();
 			if (sb.length() > 0) {
 				JsonObject jObj = gson.fromJson(sb.toString(), JsonObject.class);
-				JsonArray jArray = jObj.get("respon").getAsJsonArray();
+				JsonArray jArray = jObj.get("response").getAsJsonArray();
 				for (int i = 0; i < jArray.size(); i++) {
 					Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 					JsonObject obj = jArray.get(i).getAsJsonObject();
 					String name = "", rating = "", opening_hours = "", open_now="", avg_price = "",
 							   lat = "", lng = "", phone = "", cover_url="", message="";
 					if (obj.has("name"))
-						name = obj.get("name").getAsString();
+						name = getJsonValue(obj, "name");
 					if (obj.has("rating"))
-						rating = String.valueOf(obj.get("rating").getAsFloat());
+						rating = getJsonValue(obj, "rating");
 					if (obj.has("opening_hours"))
-						opening_hours = obj.get("opening_hours").getAsString();
-					if (obj.has("name"))
-						name = obj.get("name").getAsString();
-//					if (obj.has("place_id"))
-//						place_id = obj.get("place_id").getAsString();
-//					if (obj.has("name"))
-//						name = obj.get("name").getAsString();
-//					if (obj.has("place_id"))
-//						place_id = obj.get("place_id").getAsString();
-//					
-//					
-//					
-//					if (obj.has("geometry")) {
-//						northeastLat = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
-//								.getAsJsonObject().getAsJsonObject().get("northeast")
-//								.getAsJsonObject().get("lat").getAsDouble());
-//						northeastLng = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
-//								.getAsJsonObject().getAsJsonObject().get("northeast")
-//								.getAsJsonObject().get("lng").getAsDouble());
-//						southwestLat = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
-//								.getAsJsonObject().getAsJsonObject().get("southwest")
-//								.getAsJsonObject().get("lat").getAsDouble());
-//						southwestLng = String.valueOf(obj.get("geometry").getAsJsonObject().get("viewport")
-//								.getAsJsonObject().getAsJsonObject().get("southwest")
-//								.getAsJsonObject().get("lng").getAsDouble());
-//					}
-//					resultMap.put("neLat", northeastLat);
-//					resultMap.put("neLng", northeastLng);
-//					resultMap.put("swLat", southwestLat);
-//					resultMap.put("swLng", southwestLng);
+						opening_hours = getJsonValue(obj, "opening_hours");
+					if (obj.has("open_now"))
+						open_now = getJsonValue(obj, "open_now");
+					if (obj.has("avg_price"))
+						avg_price = getJsonValue(obj, "avg_price");
+					if (obj.has("lat"))
+						lat = getJsonValue(obj, "lat");
+					if (obj.has("lng"))
+						lng = getJsonValue(obj, "lng");
+					if (obj.has("phone"))
+						phone = getJsonValue(obj, "phone");
+					if (obj.has("cover_url"))
+						cover_url = getJsonValue(obj, "cover_url");
+					if (obj.has("primary_checkin"))
+						message = "";
+//						message = String.valueOf(obj.get("primary_checkin").getAsJsonObject().get("message").getAsString());
+					resultMap.put("name", name);
+					resultMap.put("rating", rating);
+					resultMap.put("opening_hours", opening_hours);
+					resultMap.put("open_now", open_now);
+					resultMap.put("avg_price", avg_price);
+					resultMap.put("lat", lat);
+					resultMap.put("lng", lng);
+					resultMap.put("phone", phone);
+					resultMap.put("cover_url", cover_url);
+					resultMap.put("message", message);
 					searchList.add(resultMap);
 				}
 			}
@@ -363,6 +357,9 @@ public class GMapSearch {
 		List<Map<String, Object>> randomList = new ArrayList<Map<String, Object>>();
 		Boolean isBewteen = dateTimeUtil.isBetweenTime("20", "11");
 		double ratingBetter = 3.5;
+		int length = 0;
+		int randomIndex = 0;
+		Map<String, Object> randomMap = new HashMap<String, Object>();
 		for (Map<String, Object> callbackMap : searchList) {
 			Double rating = Double.parseDouble(callbackMap.get("rating").toString());
 			if (rating > ratingBetter) { // 如果在評分大於3.5
@@ -387,58 +384,101 @@ public class GMapSearch {
 				} else {		
 				}
 			}
+			
 		}
-		int length = randomList.size();
-		int randomIndex = random.nextInt(length);
-		Map<String, Object> randomMap = randomList.get(randomIndex);
+		length = randomList.size();
+		randomIndex = random.nextInt(length);
+		randomMap = randomList.get(randomIndex);
 		return randomMap;
 	}
 	
 	// Get RandomOne Map Research //隨機的一家 (Ifoodie)
-		public Map<String, Object> getIfoodieRandom(Map<String, Object> coordinateMap, String foodName) {
-			Random random = new Random();
-			DateTimeUtil dateTimeUtil = new DateTimeUtil();
-			List<Map<String, Object>> randomList = new ArrayList<Map<String, Object>>();
-			String neLat = "",neLng = "",swLat = "",swLng = "";
-			String ifoodieURL = "";
-			neLat = (String) coordinateMap.get("neLat");
-			neLng = (String) coordinateMap.get("neLng");
-			swLat = (String) coordinateMap.get("swLat");
-			swLng = (String) coordinateMap.get("swLng");
-			ifoodieURL = getIfoodieURL(neLat, neLng, swLat, swLng, foodName);
-			ifoodieSearch(ifoodieURL);
-			
-			
-			Boolean isBewteen = dateTimeUtil.isBetweenTime("20", "11");
-			double ratingBetter = 3.5;
-//			for (Map<String, Object> callbackMap : searchList) {
-//				Double rating = Double.parseDouble(callbackMap.get("rating").toString());
-//				if (rating > ratingBetter) { // 如果在評分大於3.5
-//					if (isBewteen) {
-//						if(callbackMap.get("open_now").equals("true")) { // 如果在11~20 顯示開的
-//							randomList.add(callbackMap);
-//							continue;
-//						}
-//					} else { // 如果不在11~20 顯示開與不開的
-//						randomList.add(callbackMap);
-//						continue;
-//					}
-//				} else {		
+	public Map<String, Object> getIfoodieRandom(List<Map<String, Object>> searchList, String foodName, String text) {
+		Random random = new Random();
+		DateTimeUtil dateTimeUtil = new DateTimeUtil();
+		List<Map<String, Object>> randomList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> matchLevelMap = new HashMap<String, Object>();
+		int length = 0;
+		int randomIndex = 0;
+		Map<String, Object> randomMap = new HashMap<String, Object>();
+		
+		Boolean isBewteen = dateTimeUtil.isBetweenTime("20", "11");
+		double ratingBetter = 3.5;
+		for (Map<String, Object> callbackMap : searchList) {
+			Double rating = jsonToDouble(callbackMap, "rating");
+			if (rating > ratingBetter) { // 如果在評分小於3.5 就是蠢
+				if (isBewteen) {
+					if(callbackMap.get("open_now").equals("true")) { // 如果在11~20 顯示開的
+						matchLevelMap = matchLevel(callbackMap, text);
+						if (matchLevelMap != null) {
+							randomList.add(matchLevelMap);
+						}
+						continue;
+					}
+				} else { // 如果不在11~20 顯示開與不開的
+					matchLevelMap = matchLevel(callbackMap, text);
+					if (matchLevelMap != null) {
+						randomList.add(matchLevelMap);
+					}
+					continue;
+				}
+			} else {	
+//				matchLevelMap = matchLevel(callbackMap, text);
+//				if (!matchLevelMap.isEmpty()) {
+//					randomList.add(matchLevelMap);
 //				}
-//			}
-//			if(randomList.size() == 0){
-//				for (Map<String, Object> callbackMap : searchList) {
-//					Double rating = Double.parseDouble(callbackMap.get("rating").toString());
-//					if (rating > ratingBetter) { // 如果在評分大於3.5
-//							randomList.add(callbackMap);
-//							continue;
-//					} else {		
-//					}
-//				}
-//			}
-			int length = randomList.size();
-			int randomIndex = random.nextInt(length);
-			Map<String, Object> randomMap = randomList.get(randomIndex);
-			return randomMap;
+//				continue;
+			}
 		}
+		if(randomList.size() != 0){
+			length = randomList.size();
+			randomIndex = random.nextInt(length);
+			randomMap = randomList.get(randomIndex);
+		}
+		return randomMap;
+	}
+	
+	private Map<String, Object> matchLevel (Map<String, Object> getMap, String text){
+		Map<String, Object> matchLevelMap = new HashMap<String, Object>();
+		double avg_price = jsonToDouble(getMap, "avg_price");
+		Character firstChar = text.charAt(0);
+		if((avg_price > 1 && avg_price < 200) && firstChar == 'l'){
+			matchLevelMap = getMap;
+			return matchLevelMap;
+		} else if ((avg_price > 200 && avg_price < 400) && firstChar == 'm') {
+			matchLevelMap = getMap;
+			return matchLevelMap;
+		} else if ((avg_price > 400) && firstChar == 'h') {
+			matchLevelMap = getMap;
+			return matchLevelMap;
+		} else if(firstChar == '='){
+			matchLevelMap = getMap;
+			return matchLevelMap;
+		}
+		return null;
+	}
+	
+	private String getJsonValue(JsonObject jsonObj, String key){
+		String value = "";
+		if(!jsonObj.get(key).toString().isEmpty() && !"".equals(jsonObj.get(key).toString()) && !jsonObj.get(key).isJsonNull()){
+			value = jsonObj.get(key).getAsString();
+		}
+		return value;
+	}
+	
+	public Double jsonToDouble(Map<String, Object> callbackMap, String value){
+		Double callbackValue = 0.0;
+		if(!"".equals(callbackMap.get(value)) && callbackMap.containsKey(value)){
+			callbackValue = Double.parseDouble(callbackMap.get(value).toString());
+		}
+		return callbackValue;
+	}
+	
+	public String jsonToString(Map<String, Object> callbackMap, String value){
+		String callbackValue = "";
+		if(!"".equals(callbackMap.get(value)) && callbackMap.containsKey(value)){
+			callbackValue = callbackMap.get(value).toString();
+		}
+		return callbackValue;
+	}
 }

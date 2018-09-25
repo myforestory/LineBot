@@ -22,11 +22,13 @@ public class TextAction extends LineBotRSController {
 				callbackMessage = recommend(text);
 			} else if (text.length() >= 5 && text.toLowerCase().substring(0, 5).equals("wanna")) {
 				callbackMessage = recommendVerEg(text);
-			} else if (text.substring(0, 4).equals("s我想吃")) {
+			} else if (text.substring(0, 4).equals("=我想吃")) {
 				callbackMessage = recommendSurprise(text);
+			} else if (text.substring(0, 5).equals("l=我想吃") || text.substring(0, 5).equals("m=我想吃") || text.substring(0, 5).equals("h=我想吃")) {
+				callbackMessage = recommendSurpriseByPrice(text);
 			}
 		}catch(Exception e){
-			System.out.println(text);
+			e.printStackTrace();
 		}
 		return callbackMessage;
 	}
@@ -90,7 +92,7 @@ public class TextAction extends LineBotRSController {
 			for(int i=5; i<text.length(); i++){
 				if(Character.toString(text.charAt(i)).equals(",") || Character.toString(text.charAt(i)).equals("，")){
 					callbackURL = gMap.getURLByText(keyword, i-6);
-					textTemplate = LocationAction.getGMapSearchVerEg(callbackURL);
+					textTemplate = LocationAction.getGMapSearchVerEg(callbackURL, text);
 					count = i;
 					break;
 				}
@@ -136,7 +138,7 @@ public class TextAction extends LineBotRSController {
 		String textTemplate = "";
 		if(text.length() < 8){
 			textTemplate = MessageTemplate.textMessage(
-				"請輸入正確的格式喔！\\n我想吃＋地名＋食物\\n例如: s我想吃三重，牛排 "
+				"請輸入正確的格式喔！\\n我想吃＋地名＋食物\\n例如: =我想吃三重，牛排 "
 			);
 		} else {
 			int count = -1;
@@ -148,6 +150,36 @@ public class TextAction extends LineBotRSController {
 				if(Character.toString(text.charAt(i)).equals(",") || Character.toString(text.charAt(i)).equals("，")){
 					callbackURL = gMap.getGmapCoordinateURL(keyword, i-4);
 					foodName = gMap.getfoodName(keyword, i-4);
+					textTemplate = LocationAction.getIfoodieSearch(callbackURL, text, foodName);
+					count = i;
+					break;
+				}
+			}
+			if(count <= 0){
+				textTemplate = MessageTemplate.textMessage(
+					"可以換別的關鍵字搜搜看喔！ 例如: 我想吃三重，牛排 "
+				);
+			}
+		}	
+		return textTemplate;
+	}
+	
+	private static String recommendSurpriseByPrice(String text){
+		String textTemplate = "";
+		if(text.length() < 9){
+			textTemplate = MessageTemplate.textMessage(
+				"請輸入正確的格式喔！\\n我想吃＋地名＋食物\\n例如: s我想吃三重，牛排 "
+			);
+		} else {
+			int count = -1;
+			String callbackURL = ""; //傳回網址
+			String foodName = "";
+			GMapSearch gMap = new GMapSearch();
+			String keyword = text.substring(5, text.length());
+			for(int i=5; i<text.length(); i++){
+				if(Character.toString(text.charAt(i)).equals(",") || Character.toString(text.charAt(i)).equals("，")){
+					callbackURL = gMap.getGmapCoordinateURL(keyword, i-5);
+					foodName = gMap.getfoodName(keyword, i-5);
 					textTemplate = LocationAction.getIfoodieSearch(callbackURL, text, foodName);
 					count = i;
 					break;
